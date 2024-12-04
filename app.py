@@ -29,8 +29,36 @@ def parse_sql_comments(sql_file):
         sql_content = file.read()
         matches = re.findall(r"VALUES\('([^']*)',\d+,\d+,\w+,'',\d+,'([^']*)'", sql_content)
         for guid, comment in matches:
-            comments[guid] = comment
+            try:
+                # Parse the comment content
+                comment_data = parse_comment_content(comment)
+                comments[guid] = comment_data
+            except ET.ParseError as e:
+                print(f"Error parsing comment for GUID {guid}: {e}")
     return comments
+
+def parse_comment_content(comment):
+    try:
+        # Parse the XML content of the comment
+        root = ET.fromstring(comment)
+        comment_data = {
+            'GUID': root.get('GUID'),
+            'id': root.get('id'),
+            'order': root.get('order'),
+            'isValid': root.get('isValid'),
+            'validDate': root.get('validDate'),
+            'version': root.get('version'),
+            'article': root.get('article'),
+            'formatUnits': []
+        }
+        for format_unit in root.findall('formatUnit'):
+            format_unit_data = {attr: format_unit.get(attr) for attr in format_unit.keys()}
+            format_unit_data['text'] = format_unit.text
+            comment_data['formatUnits'].append(format_unit_data)
+        return comment_data
+    except ET.ParseError as e:
+        print(f"Error parsing comment: {e}")
+        return None
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
@@ -49,8 +77,9 @@ def get_data():
         data = parse_xml(root)
 
         comments = parse_sql_comments(sql_file)
+        data = add_comments_to_blocks(data, comments)
         
-        return jsonify({'data': data, 'comments': comments})
+        return jsonify({'data': data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -79,9 +108,11 @@ def parse_xml(root):
 
 def add_comments_to_blocks(data, comments):
     for block in data['blocks']:
-        guid = block.get('guid')
+        guid = block.get('GUID')
         if guid and guid in comments:
-            block['comments'] = comments[guid]
+            block['comments'] = [comments[guid]]
+        else:
+            block['comments'] = []
     return data
 
 @app.route('/images/<path:filename>', methods=['GET'])
