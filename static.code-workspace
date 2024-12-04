@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "static",
+			"path": "../visualizacion-xml/build/static"
+		},
+		{
+			"name": "back-end-visualizacion",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

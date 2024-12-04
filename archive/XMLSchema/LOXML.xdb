@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdb="http://www.borland.com/schemas/delphi/6.0/XMLDataBinding">
+	<!--Estructura principal de documento legal-->
+	<xs:element name="document">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:appinfo xdb:docElement="document"/>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element ref="documentMetadata" maxOccurs="1"/>
+				<xs:element ref="block" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--Metadatos del documento-->
+	<xs:element name="documentMetadata">
+		<xs:complexType>
+			<xs:attribute name="idType" type="xs:long" use="required"/>
+			<xs:attribute name="idSubtype" type="xs:long" use="optional"/>
+			<xs:attribute name="idCountry" type="xs:long" use="required"/>
+			<xs:attribute name="idDepartment" type="xs:long" use="optional"/>
+			<xs:attribute name="idCity" type="xs:long" use="optional"/>
+			<xs:attribute name="idEntidadEmisora" type="xs:long" use="required"/>
+			<xs:attribute name="docNumber" type="xs:string" use="optional"/>
+			<xs:attribute name="docExtendedNumber" type="xs:string" use="optional"/>
+			<xs:attribute name="senateNumber" type="xs:string" use="optional"/>
+			<xs:attribute name="chamberNumber" type="xs:string" use="optional"/>
+			<xs:attribute name="expeditionDate" type="xs:date" use="required"/>
+			<xs:attribute name="year" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="publishDate" type="xs:date" use="optional"/>
+			<xs:attribute name="idPublication" type="xs:long" use="optional"/>
+			<xs:attribute name="publicationNumber" type="xs:long" use="optional"/>
+			<xs:attribute name="validDate" type="xs:date" use="optional"/>
+			<xs:attribute name="idSaloon" type="xs:long" use="optional"/>
+			<xs:attribute name="idSection" type="xs:long" use="optional"/>
+			<xs:attribute name="version" type="xs:string" use="optional"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="description" type="xs:string" use="required"/>
+			<xs:attribute name="code" type="xs:string" use="optional"/>
+			<xs:attribute name="isParsed" type="xs:boolean" use="optional" fixed="false"/>
+			<xs:attribute name="styleFile" type="xs:anyURI" use="optional"/>
+			<xs:attribute name="documentId" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<!--Bloque de texto-->
+	<xs:element name="block">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:appinfo xdb:repeated="True"/>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element ref="formatUnit" minOccurs="0" maxOccurs="unbounded"/>
+				<!--<xs:element ref="formatUnitTemp" minOccurs="0" maxOccurs="unbounded"/>-->
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:choice>
+						<xs:element ref="list"  maxOccurs="unbounded"/>
+						<xs:element ref="table" maxOccurs="unbounded"/>						
+						<xs:element ref="image" maxOccurs="unbounded"/>
+					</xs:choice>					
+					<xs:element ref="formatUnit" minOccurs="0" maxOccurs="unbounded"/>
+					<!--<xs:element ref="formatUnitTemp" minOccurs="0" maxOccurs="unbounded"/>-->
+				</xs:sequence>
+				<xs:element ref="formatUnit" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="GUID" type="xs:string"/>
+			<xs:attribute name="id" type="xs:int"/>
+			<xs:attribute name="fatherBlockId" type="xs:int"/>
+			<xs:attribute name="description" type="xs:string"/>
+			<xs:attribute name="order" type="xs:int"/>
+			<xs:attribute name="isValid" type="xs:boolean"/>
+			<xs:attribute name="validDate" type="xs:date"/>
+			<xs:attribute name="version" type="xs:integer"/>
+			<xs:attribute name="article" type="xs:string"/>
+			<xs:attribute name="notes" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<!--UNIDAD DE FORMATO-->
+	<xs:element name="formatUnit">
+		<xs:complexType mixed="true">
+			<xs:annotation>
+				<xs:appinfo xdb:repeated="True"/>
+			</xs:annotation>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element ref="br" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:choice>
+			<xs:attribute name="font" use="optional" default="Times New Roman">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Arial"/>
+						<xs:enumeration value="Times New Roman"/>
+						<xs:enumeration value="Garamond"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="size" use="optional" default="15">
+				<xs:simpleType>
+					<xs:restriction base="xs:byte">
+						<xs:maxInclusive value="16"/>
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="isBold" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isUnderlined" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isCursive" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isUpperCase" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isLowerCase" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="isVersales" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isSup" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isSub" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isStroked" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="align" use="optional" default="left">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="center"/>
+						<xs:enumeration value="left"/>
+						<xs:enumeration value="right"/>
+						<xs:enumeration value="justify"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="isTitle" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="isToc" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="withSangria" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="style" type="xs:string" use="optional"/>
+			<xs:attribute name="footnote" type="xs:string" use="optional"/>
+			<!--Atributos de referencia, deben usarse todos si isReference es true-->
+			<xs:attribute name="isReference" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="refParams" type="xs:string" use="optional" default="false"/>
+			<xs:attribute name="refTooltip" type="xs:string" use="optional" default="false"/>
+			<xs:attribute name="color" type="xs:string" use="optional" default="0,0,0"/>
+		</xs:complexType>
+	</xs:element>
+	<!--Elemento br para espacios-->
+	<xs:element name="br">
+		<xs:complexType>
+			<xs:attribute name="count" type="xs:int"/>
+		</xs:complexType>
+	</xs:element>
+	<!--TableUnit-->
+	<xs:element name="table">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:appinfo xdb:repeated="True"/>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element ref="row" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="row">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cell" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cell">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="block" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--Lista-->
+	<xs:element name="list">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:appinfo xdb:repeated="True"/>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element ref="listItem" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isEnumerated" default="false" type="xs:boolean"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="listItem">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="block" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--Imagen-->
+	<xs:element name="image">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:appinfo xdb:repeated="True"/>
+			</xs:annotation>
+			<xs:attribute name="location" type="xs:anyURI"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
