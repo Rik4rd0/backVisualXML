@@ -35,30 +35,22 @@ def parse_sql_comments(sql_file):
 @app.route('/api/data', methods=['GET'])
 def get_data():
     try:
-        # rutas 
         xml_file = os.path.join('archive', 'full', 'et.xml')
         xsd_file = os.path.join('archive', 'XMLSchema', 'LOXML.xsd')
         sql_file = os.path.join('archive', 'comentariosaj', 'et._ComentariosAj.sql')
         
-    
         is_valid, error = validate_xml(xml_file, xsd_file)
         if not is_valid:
             return jsonify({'error': f'XML Validation Error: {error}'}), 400
 
-    
         tree = ET.parse(xml_file)
         root = tree.getroot()
         
         data = parse_xml(root)
 
-        # Lee el contenido del archivo SQL
         comments = parse_sql_comments(sql_file)
         
-        data = add_comments_to_blocks(data, comments)
-        
-        print(data)
-        
-        return jsonify({'data': data})
+        return jsonify({'data': data, 'comments': comments})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
