@@ -24,7 +24,4 @@ Este proyecto es una **API REST construida con Flask** que permite validar archi
 - 📦 **API REST disponible** en `/api/data`.
 - 🖼️ **Servidor de archivos estáticos** e imágenes.
 
----
-
-## 🗂️ Estructura esperada
 
